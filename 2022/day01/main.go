@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	input, err := ioutil.ReadFile("./input.txt")
+	input, err := os.ReadFile("./input.txt")
 	if err != nil {
 		panic(err)
 	}
