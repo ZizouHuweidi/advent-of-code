@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strings"
 )
 
 func main() {
@@ -10,5 +11,16 @@ func main() {
 		panic(err)
 	}
 
-	// x := strings.Split(string(input), "\n")
+	x := strings.TrimRight(string(input), "\n")
+
+	priorities := make(map[string]int)
+
+	for i := 0; i < 26; i++ {
+		priorities[ASCIIIntToChar('a'+i)] = i + 1
+		priorities[ASCIIIntToChar('A'+i)] = i + 27
+	}
+}
+
+func ASCIIIntToChar(code int) string {
+	return string(rune(code))
 }
