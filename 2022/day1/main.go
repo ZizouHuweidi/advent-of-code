@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -44,6 +44,7 @@ func Part1(testInput string) ([]int64, error) {
 		}
 		currentTotal += cal
 	}
-	sort.Slice(elfTotals, func(i, j int) bool { return elfTotals[i] > elfTotals[j] })
+	slices.Sort(elfTotals)
+	slices.Reverse(elfTotals)
 	return elfTotals[:3], nil
 }
