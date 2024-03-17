@@ -1,85 +1,82 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 	"unicode"
 )
 
 func main() {
-	input, err := os.ReadFile(os.Args[1])
+	file, err := os.Open(os.Args[1])
 	if err != nil {
 		panic(err)
 	}
-	output := Part1(string(input))
-	fmt.Println(output)
+	defer file.Close()
 
-	output = Part2(string(input))
-	fmt.Println(output)
+	scanner := bufio.NewScanner(file)
+
+	sum_part1 := 0
+	sum_part2 := 0
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		combinedDigits := Part1(line)
+		sum_part1 += combinedDigits
+
+		combinedDigits = Part2(line)
+		sum_part2 += combinedDigits
+
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+
+	fmt.Printf("Sum of Part_1: %d\n", sum_part1)
+	fmt.Printf("Sum of part_2: %d\n", sum_part2)
 }
 
-func getCalibration(str string) int64 {
-	var res string
+var numberMap = map[string]string{
+	"zero":  "zero0zero",
+	"one":   "one1one",
+	"two":   "two2two",
+	"three": "three3three",
+	"four":  "four4four",
+	"five":  "five5five",
+	"six":   "six6six",
+	"seven": "seven7seven",
+	"eight": "eight8eight",
+	"nine":  "nine9nine",
+}
 
-	var first string
-	for _, s := range str {
-		if unicode.IsDigit(s) {
-			first = string(s)
-			break
+func Part1(line string) (combinedDigits int) {
+	foundFirst := false
+	var first, last int
+
+	for _, char := range line {
+		if unicode.IsDigit(char) {
+			if !foundFirst {
+				first = int(char - '0')
+				foundFirst = true
+			}
+			last = int(char - '0')
 		}
 	}
 
-	var last string
-	for i := len(str) - 1; i > 0; i-- {
-		if unicode.IsDigit(rune(str[i])) {
-			last = string(str[i])
-			break
+	return first*10 + last
+}
+
+func Part2(line string) (combinedDigits int) {
+	for word, digit := range numberMap {
+		if strings.Contains(line, word) {
+			line = strings.ReplaceAll(line, word, digit)
 		}
 	}
+	combinedDigits = Part1(line)
 
-	res = first + last
-	ans, _ := strconv.ParseInt(res, 10, 64)
-
-	return ans
-
-}
-
-func convertInput(input string) string {
-	for _, line := range strings.Split(input, "\n") {
-		for key := range valid_num_strings {
-
-		}
-	}
-	return input
-}
-
-func Part1(input string) int64 {
-	var total int64
-	for _, line := range strings.Split(input, "\n") {
-		total += getCalibration(line)
-	}
-	return total
-}
-
-var valid_num_strings = map[string]string{
-	"one":   "1",
-	"two":   "2",
-	"three": "3",
-	"four":  "4",
-	"five":  "5",
-	"six":   "6",
-	"seven": "7",
-	"eight": "8",
-	"nine":  "9",
-}
-
-func Part2(input string) int64 {
-	var res int64
-	inp := convertInput(input)
-	println(inp)
-	res = Part1(inp)
-
-	return res
+	return combinedDigits
 }
